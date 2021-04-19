@@ -1,10 +1,12 @@
 package edu.skku.map.nonogram;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.Image;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -28,7 +30,7 @@ public class GridAdapter extends BaseAdapter {
     }
     public GridAdapter(Context c, ArrayList<Bitmap> slicedImg){
         this.c = c;
-        this.slicedImg = slicedImg;
+        this.slicedImg = (ArrayList<Bitmap>) slicedImg.clone();
         System.out.println("왜 안되지?1");
     }
     @Override
@@ -43,13 +45,15 @@ public class GridAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 //        int imageID = Integer.parseInt(imgString.substring(imgString.lastIndexOf("/") + 1, imgString.length()));
-//        Bitmap b =
+
+        System.out.println("positions : "+  position);
         System.out.println("왜 안되지?2");
         ImageView imageView;
         if(convertView == null){

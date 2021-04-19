@@ -4,12 +4,14 @@ import edu.skku.map.nonogram.ImageMaking;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Display;
@@ -89,9 +91,35 @@ public class MainActivity extends AppCompatActivity {
                 origin = Bitmap.createScaledBitmap(origin, wantedSize, wantedSize, true);
                 //3. 이미지 20등분
                 changedImg.imgSlicing(size.x, origin);
-                gridAdapter = new GridAdapter(mainContext, changedImg.slicedImg);
-                gridView.setAdapter(gridAdapter);
+
+                @SuppressLint("StaticFieldLeak")
+                AsyncTask<Integer, Double, String> makingImageViewTask = new AsyncTask<Integer, Double, String>() {
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+                    }
+
+                    @Override
+                    protected void onPostExecute(String s) {
+                        super.onPostExecute(s);
+                        gridAdapter = new GridAdapter(mainContext, changedImg.slicedImg);
+                        gridView.setAdapter(gridAdapter);
+                    }
+
+                    @Override
+                    protected void onProgressUpdate(Double... values) {
+                        super.onProgressUpdate(values);
+                    }
+
+                    @Override
+                    protected String doInBackground( Integer... integers) {
+
+                        return null;
+                    }
+                };
+                makingImageViewTask.execute(1);
                 inputStream.close();
+                //changedImg.slicedImg.clear();
             } catch (IOException e) {
                 e.printStackTrace();
             }

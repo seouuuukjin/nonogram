@@ -38,16 +38,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-<!--    <ImageView-->
-<!--        android:id="@+id/imageView"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginStart="144dp"-->
-<!--        android:layout_marginTop="188dp"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        tools:srcCompat="@tools:sample/avatars" />-->
-
         <GridView
         android:id="@+id/gridView"
         android:layout_width="380dp"
@@ -55,7 +45,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="15dp"
         android:numColumns="auto_fit"
-        android:stretchMode="columnWidth"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
