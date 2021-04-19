@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageView;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     Button toSearch, toGallery;
     EditText searchKeyword;
     GridAdapter gridAdapter;
+    ImageView imageView;
     Context mainContext = this;
     ArrayList<Bitmap> slicedImg;
     Bitmap origin;
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         toGallery = findViewById(R.id.toGallery);
         toSearch = findViewById(R.id.toSearch);
         searchKeyword = findViewById(R.id.searchKeyword);
+        //imageView = findViewById(R.id.imageView);
 
         toGallery.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,19 +49,18 @@ public class MainActivity extends AppCompatActivity {
                 intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(intent, 101);
+                //imageView.setImageBitmap(origin);
             }
         });
 
-
-
-        gridAdapter = new GridAdapter(mainContext, origin);
-        gridView.setAdapter(gridAdapter);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //해당 아이템 클릭되었을 때 행동 정의
-            }
-        });
+//        gridAdapter = new GridAdapter(mainContext, origin);
+//        gridView.setAdapter(gridAdapter);
+//        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                //해당 아이템 클릭되었을 때 행동 정의
+//            }
+//        });
     }
 
     @Override
@@ -68,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
             try {
                 InputStream inputStream = getContentResolver().openInputStream(data.getData());
                 origin = BitmapFactory.decodeStream(inputStream);
+                //imageView.setImageBitmap(origin);
+                gridAdapter = new GridAdapter(mainContext, origin);
+                gridView.setAdapter(gridAdapter);
                 inputStream.close();
             } catch (IOException e) {
                 e.printStackTrace();

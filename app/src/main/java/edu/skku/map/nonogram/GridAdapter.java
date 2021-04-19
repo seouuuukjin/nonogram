@@ -19,27 +19,29 @@ public class GridAdapter extends BaseAdapter {
     }
     public GridAdapter(Context c, Bitmap bm){
         this.c = c;
-        deliveredImg = bm;
+        this.deliveredImg = bm;
+        System.out.println("왜 안되지?1");
     }
     @Override
     public int getCount() {
-        return 0;
+        return 1;
     }
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return deliveredImg;
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return 1;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 //        int imageID = Integer.parseInt(imgString.substring(imgString.lastIndexOf("/") + 1, imgString.length()));
 //        Bitmap b =
+        System.out.println("왜 안되지?2");
         ImageView imageView;
         if(convertView == null){
             imageView = new ImageView(c);
@@ -48,6 +50,7 @@ public class GridAdapter extends BaseAdapter {
             imageView = (ImageView)convertView;
         }
         imageView.setImageBitmap(deliveredImg);
+        System.out.println("왜 안되지?3");
         return imageView;
     }
 }
