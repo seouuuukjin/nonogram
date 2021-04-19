@@ -1,5 +1,6 @@
 package edu.skku.map.nonogram;
 
+import edu.skku.map.nonogram.ImageMaking;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,10 +8,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,8 +34,10 @@ public class MainActivity extends AppCompatActivity {
     GridAdapter gridAdapter;
     ImageView imageView;
     Context mainContext = this;
-    ArrayList<Bitmap> slicedImg;
+    //ArrayList<Bitmap> slicedImg;
     Bitmap origin;
+    Display display;
+    ImageMaking changedImg = new ImageMaking();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,10 +74,22 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 101 && resultCode == RESULT_OK) {
             try {
+                //갤러리에서 이미지를 가져온다. 비트맵 형식으로 가져옴
                 InputStream inputStream = getContentResolver().openInputStream(data.getData());
                 origin = BitmapFactory.decodeStream(inputStream);
                 //imageView.setImageBitmap(origin);
-                gridAdapter = new GridAdapter(mainContext, origin);
+                //이제 받아온 비트맵 이미지를 20x20으로 잘라서 리스트에 저장한다.
+                System.out.println("시작1");
+                //1. 화면 크기 구하기
+                display = ((WindowManager)mainContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+                Point size = new Point();
+                display.getSize(size); // size.x => 가로 size.y => 세로
+                int wantedSize = size.x;
+                //2. 현재 이미지 크기를 resize
+                origin = Bitmap.createScaledBitmap(origin, wantedSize, wantedSize, true);
+                //3. 이미지 20등분
+                changedImg.imgSlicing(size.x, origin);
+                gridAdapter = new GridAdapter(mainContext, changedImg.slicedImg);
                 gridView.setAdapter(gridAdapter);
                 inputStream.close();
             } catch (IOException e) {

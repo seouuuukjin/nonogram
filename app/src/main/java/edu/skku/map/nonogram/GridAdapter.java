@@ -10,10 +10,14 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import java.util.ArrayList;
+
 public class GridAdapter extends BaseAdapter {
-    private Context c;
+    private final Context c;
     private String imgString;
     Bitmap deliveredImg;
+    public ArrayList<Bitmap> slicedImg;
+
     public GridAdapter(Context c){
         this.c = c;
     }
@@ -22,19 +26,24 @@ public class GridAdapter extends BaseAdapter {
         this.deliveredImg = bm;
         System.out.println("왜 안되지?1");
     }
+    public GridAdapter(Context c, ArrayList<Bitmap> slicedImg){
+        this.c = c;
+        this.slicedImg = slicedImg;
+        System.out.println("왜 안되지?1");
+    }
     @Override
     public int getCount() {
-        return 1;
+        return slicedImg.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return deliveredImg;
+        return slicedImg.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return 1;
+        return 0;
     }
 
     @Override
