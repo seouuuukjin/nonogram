@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        gridView = findViewById(R.id.gridView);
+        gridView = (GridView) findViewById(R.id.gridView);
         toGallery = findViewById(R.id.toGallery);
         toSearch = findViewById(R.id.toSearch);
         searchKeyword = findViewById(R.id.searchKeyword);
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
     }
-
+    //다음은 갤러리 버튼 눌렀을 때, 기본 갤러리앱으로 연결이 되는 활동들
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -79,9 +79,6 @@ public class MainActivity extends AppCompatActivity {
                 //갤러리에서 이미지를 가져온다. 비트맵 형식으로 가져옴
                 InputStream inputStream = getContentResolver().openInputStream(data.getData());
                 origin = BitmapFactory.decodeStream(inputStream);
-                //imageView.setImageBitmap(origin);
-                //이제 받아온 비트맵 이미지를 20x20으로 잘라서 리스트에 저장한다.
-                System.out.println("시작1");
                 //1. 화면 크기 구하기
                 display = ((WindowManager)mainContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
                 Point size = new Point();
@@ -89,43 +86,21 @@ public class MainActivity extends AppCompatActivity {
                 int wantedSize = size.x;
                 //2. 현재 이미지 크기를 resize
                 origin = Bitmap.createScaledBitmap(origin, wantedSize, wantedSize, true);
-                //3. 이미지 20등분
-                changedImg.imgSlicing(size.x, origin);
+                //3. 현재 이미지를 흑백으로 변환
+                changedImg.imgBlackWhiteScaling(origin, wantedSize, wantedSize);
+                //3. 흑백으로 변환된 이미지 20등분
+                changedImg.imgSlicing(size.x, changedImg.coloredImg);
 
-                @SuppressLint("StaticFieldLeak")
-                AsyncTask<Integer, Double, String> makingImageViewTask = new AsyncTask<Integer, Double, String>() {
-                    @Override
-                    protected void onPreExecute() {
-                        super.onPreExecute();
-                    }
+                //custom adapter 설정해서 gridview생성해주기
+                gridAdapter = new GridAdapter(mainContext, changedImg.slicedImg);
+                gridView.setAdapter(gridAdapter);
 
-                    @Override
-                    protected void onPostExecute(String s) {
-                        super.onPostExecute(s);
-                        gridAdapter = new GridAdapter(mainContext, changedImg.slicedImg);
-                        gridView.setAdapter(gridAdapter);
-                    }
-
-                    @Override
-                    protected void onProgressUpdate(Double... values) {
-                        super.onProgressUpdate(values);
-                    }
-
-                    @Override
-                    protected String doInBackground( Integer... integers) {
-
-                        return null;
-                    }
-                };
-                makingImageViewTask.execute(1);
                 inputStream.close();
-                //changedImg.slicedImg.clear();
+                //방금 생성해서 넣은 ArrayList 초기화 -> 다음 사진으로 설정 가능하도록 비우는 작업하는 것임
+                changedImg.slicedImg.clear();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-//        else if(requestCode == 101 && resultCode == RESULT_CANCELED){
-//
-//        }
     }
 }

@@ -62,7 +62,8 @@ public class GridAdapter extends BaseAdapter {
         else{
             imageView = (ImageView)convertView;
         }
-        imageView.setImageBitmap(deliveredImg);
+        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        imageView.setImageBitmap(slicedImg.get(position));
         System.out.println("왜 안되지?3");
         return imageView;
     }

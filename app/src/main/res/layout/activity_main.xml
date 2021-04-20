@@ -38,13 +38,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-        <GridView
+    <GridView
         android:id="@+id/gridView"
         android:layout_width="380dp"
         android:layout_height="633dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="60dp"
         android:layout_marginTop="15dp"
-        android:numColumns="auto_fit"
+        android:layout_marginEnd="60dp"
+        android:numColumns="20"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
