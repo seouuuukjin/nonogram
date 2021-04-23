@@ -7,6 +7,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 
+import com.google.gson.Gson;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -57,11 +59,13 @@ public class NaverAPI {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String resp = response.body().string();
+
                 System.out.println(resp);
+
                 //3. imgWorker 인스턴스 생성
                 ImageMaking imageWorker = new ImageMaking(context, size);
                 //3-1. 추출한 이미지 링크를 담아서 task 실행과 함께 전달
-                imageWorker.execute();
+                imageWorker.execute(parseResponse(resp));
 //                ((MainActivity)context).runOnUiThread(new Runnable() {
 //                    @Override
 //                    public void run() {
@@ -77,5 +81,13 @@ public class NaverAPI {
             }
         });
         return returnImg;
+    }
+    public String parseResponse(String resp){
+        String firstImgLink;
+        Gson gson = new Gson();
+        final DataModel totalData = gson.fromJson(resp, DataModel.class);
+        firstImgLink = totalData.getItems().get(0).link;
+
+        return firstImgLink;
     }
 }
