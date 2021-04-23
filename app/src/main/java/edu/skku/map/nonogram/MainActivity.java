@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     public static GridAdapter gridAdapter;
     @SuppressLint("StaticFieldLeak")
     public static GridView gridView;
+    public static int wantedSize;
+
     Button toSearch, toGallery;
     EditText searchKeyword;
     ImageView imageView;
@@ -62,18 +64,9 @@ public class MainActivity extends AppCompatActivity {
                 display = ((WindowManager)mainContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
                 Point size = new Point();
                 display.getSize(size); // size.x => 가로 size.y => 세로
-                //int wantedSize = size.x;
-                //1-2. 화면크기를 NaverAPI로 전달
-                //2. 현재 이미지 크기를 resize
-                //origin = Bitmap.createScaledBitmap(client.NaverSearch(keyword), wantedSize, wantedSize, true);
-//                origin = client.returnImg;
-//                System.out.println("################################");
-//                System.out.println("################################" + origin);
-//                //custom adapter 설정해서 gridview생성해주기
-//                gridAdapter = new GridAdapter(mainContext, changedImg.slicedImg);
-//                gridView.setAdapter(gridAdapter);
                 //2. NaverAPI 인스턴스 만들어서 원하는 사진 사이즈, MainContext 전달
-                NaverAPI client = new NaverAPI(size.x, mainContext);
+                wantedSize = size.x;
+                NaverAPI client = new NaverAPI(mainContext);
                 //2-1. 키워드로 검색
                 client.NaverSearch(keyword);
                 //3은 NaverAPI 클래스에서 실행
@@ -105,18 +98,29 @@ public class MainActivity extends AppCompatActivity {
                 display = ((WindowManager)mainContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
                 Point size = new Point();
                 display.getSize(size); // size.x => 가로 size.y => 세로
-                int wantedSize = size.x;
+                wantedSize = size.x;
                 //2. 현재 이미지 크기를 resize
                 origin = Bitmap.createScaledBitmap(origin, wantedSize, wantedSize, true);
+                //2-1. 흰색 바탕 보드 사진 만들기
+                Bitmap whiteBoardImg = changedImg.makingWhiteBoard(wantedSize, wantedSize);
                 //3. 현재 이미지를 흑백으로 변환
                 changedImg.BlackWhiteColoredImg = changedImg.imgBlackWhiteScaling(origin, wantedSize, wantedSize);
                 //3. 흑백으로 변환된 이미지 20등분
-                changedImg.imgSlicing(size.x, changedImg.BlackWhiteColoredImg);
+                changedImg.imgSlicing(0, size.x, changedImg.BlackWhiteColoredImg);
+                changedImg.imgSlicing(1, size.x, whiteBoardImg);
 
                 //custom adapter 설정해서 gridview생성해주기
-                gridAdapter = new GridAdapter(mainContext, changedImg.slicedImg);
+                gridAdapter = new GridAdapter(mainContext, changedImg.slicedImg, wantedSize);
                 gridView.setAdapter(gridAdapter);
-
+                gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+                            if(changedImg.slicedImg_Backup.get(position) == changedImg.blackImg){
+                                changedImg.slicedImg_Backup.get(position) = changedImg.convertToBlack(wantedSize/20, wantedSize/20, changedImg.slicedImg_Backup.get(position));
+                            }
+                    }
+                });
                 inputStream.close();
                 //방금 생성해서 넣은 ArrayList 초기화 -> 다음 사진으로 설정 가능하도록 비우는 작업하는 것임
                 changedImg.slicedImg.clear();

@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
@@ -18,22 +19,22 @@ public class GridAdapter extends BaseAdapter {
     private final Context c;
     private String imgString;
     public ArrayList<Bitmap> slicedImg;
+    int size;
     //임시 이미지 변수
     Bitmap deliveredImg;
-
 
     public GridAdapter(Context c){
         this.c = c;
     }
-    public GridAdapter(Context c, Bitmap bm){
+    public GridAdapter(Context c, Bitmap bm, int size){
         this.c = c;
         this.deliveredImg = bm;
-        System.out.println("왜 안되지?1");
+        this.size = size;
     }
-    public GridAdapter(Context c, ArrayList<Bitmap> slicedImg){
+    public GridAdapter(Context c, ArrayList<Bitmap> slicedImg, int size){
         this.c = c;
         this.slicedImg = (ArrayList<Bitmap>) slicedImg.clone();
-        System.out.println("왜 안되지?1");
+        this.size = size;
     }
     @Override
     public int getCount() {
@@ -55,21 +56,19 @@ public class GridAdapter extends BaseAdapter {
     @SuppressLint("StaticFieldLeak")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-//        int imageID = Integer.parseInt(imgString.substring(imgString.lastIndexOf("/") + 1, imgString.length()));
 
         System.out.println("positions : "+  position);
-        System.out.println("왜 안되지?2");
-        ImageView imageView;
+        ImageView image;
         if(convertView == null){
-            imageView = new ImageView(c);
+            image = new ImageView(c);
         }
         else{
-            imageView = (ImageView)convertView;
+            image = (ImageView) convertView;
         }
-        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        imageView.setImageBitmap(slicedImg.get(position));
+        image.setLayoutParams(new ViewGroup.LayoutParams(size / 20, size / 20));
+        image.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        image.setImageBitmap(slicedImg.get(position));
         //imageView.setImageBitmap(deliveredImg);
-        System.out.println("왜 안되지?3");
-        return imageView;
+        return image;
     }
 }

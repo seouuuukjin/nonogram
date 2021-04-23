@@ -25,17 +25,16 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 import static edu.skku.map.nonogram.MainActivity.gridAdapter;
+import static edu.skku.map.nonogram.MainActivity.wantedSize;
 
 public class NaverAPI {
     String clientID = "KRIEpEMi28TqAmxIyo5Y";
     String clientSecret = "5RBthImUlc";
-    int size;
     Bitmap returnImg;
 
     @SuppressLint("StaticFieldLeak")
     Context context;
-    public NaverAPI(int size, Context context){
-        this.size = size;
+    public NaverAPI(Context context){
         this.context = context;
     }
     public NaverAPI(){}
@@ -59,11 +58,10 @@ public class NaverAPI {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String resp = response.body().string();
-
                 System.out.println(resp);
 
                 //3. imgWorker 인스턴스 생성
-                ImageMaking imageWorker = new ImageMaking(context, size);
+                ImageMaking imageWorker = new ImageMaking(context, wantedSize);
                 //3-1. 추출한 이미지 링크를 담아서 task 실행과 함께 전달
                 imageWorker.execute(parseResponse(resp));
 //                ((MainActivity)context).runOnUiThread(new Runnable() {
