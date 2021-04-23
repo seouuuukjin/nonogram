@@ -17,8 +17,10 @@ import java.util.ArrayList;
 public class GridAdapter extends BaseAdapter {
     private final Context c;
     private String imgString;
-    Bitmap deliveredImg;
     public ArrayList<Bitmap> slicedImg;
+    //임시 이미지 변수
+    Bitmap deliveredImg;
+
 
     public GridAdapter(Context c){
         this.c = c;
@@ -36,11 +38,13 @@ public class GridAdapter extends BaseAdapter {
     @Override
     public int getCount() {
         return slicedImg.size();
+        //return 1;
     }
 
     @Override
     public Object getItem(int position) {
         return slicedImg.get(position);
+        //return position;
     }
 
     @Override
@@ -64,6 +68,7 @@ public class GridAdapter extends BaseAdapter {
         }
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         imageView.setImageBitmap(slicedImg.get(position));
+        //imageView.setImageBitmap(deliveredImg);
         System.out.println("왜 안되지?3");
         return imageView;
     }
