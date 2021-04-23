@@ -24,7 +24,7 @@ public class ImageMaking extends AsyncTask<String, String, String> {
 
     public Bitmap BlackWhiteColoredImg;
     public Bitmap originImg;
-    public int size;
+    public int size = wantedSize;
     Context context;
     Bitmap blackImg = makingBlackImg(size / 20, size / 20);
 

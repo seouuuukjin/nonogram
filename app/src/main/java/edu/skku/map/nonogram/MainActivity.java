@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     //ArrayList<Bitmap> slicedImg;
     Bitmap origin;
     Display display;
-    ImageMaking changedImg = new ImageMaking();
+    ImageMaking changedImg;
     String keyword;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 //2. 현재 이미지 크기를 resize
                 origin = Bitmap.createScaledBitmap(origin, wantedSize, wantedSize, true);
                 //2-1. 흰색 바탕 보드 사진 만들기
+                changedImg = new ImageMaking();
                 Bitmap whiteBoardImg = changedImg.makingWhiteBoard(wantedSize, wantedSize);
                 //3. 현재 이미지를 흑백으로 변환
                 changedImg.BlackWhiteColoredImg = changedImg.imgBlackWhiteScaling(origin, wantedSize, wantedSize);
@@ -115,9 +116,10 @@ public class MainActivity extends AppCompatActivity {
                 gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
                             if(changedImg.slicedImg_Backup.get(position) == changedImg.blackImg){
-                                changedImg.slicedImg_Backup.get(position) = changedImg.convertToBlack(wantedSize/20, wantedSize/20, changedImg.slicedImg_Backup.get(position));
+                                System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+                                //changedImg.slicedImg_Backup.get(position) = changedImg.convertToBlack(wantedSize/20, wantedSize/20, changedImg.slicedImg_Backup.get(position));
+                                changedImg.slicedImg_Backup.set(0, changedImg.blackImg);
                             }
                     }
                 });
