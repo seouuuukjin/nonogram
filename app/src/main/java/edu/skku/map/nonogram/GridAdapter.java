@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -20,6 +21,10 @@ public class GridAdapter extends BaseAdapter {
     private String imgString;
     public ArrayList<Bitmap> slicedImg;
     int size;
+    public NumberList answerNumberList = new NumberList();
+    int maxX;
+    int maxY;
+
     //임시 이미지 변수
     Bitmap deliveredImg;
 
@@ -30,6 +35,7 @@ public class GridAdapter extends BaseAdapter {
         this.c = c;
         this.deliveredImg = bm;
         this.size = size;
+
     }
     public GridAdapter(Context c, ArrayList<Bitmap> slicedImg, int size){
         this.c = c;
@@ -38,7 +44,10 @@ public class GridAdapter extends BaseAdapter {
     }
     @Override
     public int getCount() {
-        return slicedImg.size();
+        maxX = answerNumberList.maxSizeX();
+        maxY = answerNumberList.maxSizeY();
+        System.out.println("max => " + maxX + " => " + maxY);
+        return (20 + maxX) * (20 + maxY);
         //return 1;
     }
 
@@ -57,18 +66,39 @@ public class GridAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        System.out.println("positions : "+  position);
-        ImageView image;
-        if(convertView == null){
-            image = new ImageView(c);
+        int X,Y;
+        X = position / (maxY + 20);
+        Y = position % (maxY + 20);
+
+        System.out.println("(X, Y) = "+ X + ", " + Y);
+
+        if(X < maxX && Y < maxY){
+            TextView textView = new TextView(c);
+            return textView;
+        }
+        else if(X < maxX && Y >= maxY){
+            TextView textView = new TextView(c);
+            return textView;
+        }
+        else if(X >= maxX && Y < maxY){
+            TextView textView = new TextView(c);
+            return textView;
         }
         else{
-            image = (ImageView) convertView;
+            ImageView image;
+            if(convertView == null){
+                image = new ImageView(c);
+            }
+            else{
+                image = (ImageView) convertView;
+            }
+            image.setLayoutParams(new ViewGroup.LayoutParams(size / 20, size / 20));
+            image.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            image.setImageBitmap(slicedImg.get((X - maxX) * (Y - maxY)));
+
+            //image.setImageBitmap(deliveredImg);
+            //System.out.println(slicedImg.get(position));
+            return image;
         }
-        image.setLayoutParams(new ViewGroup.LayoutParams(size / 20, size / 20));
-        image.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        image.setImageBitmap(slicedImg.get(position));
-        //imageView.setImageBitmap(deliveredImg);
-        return image;
     }
 }
