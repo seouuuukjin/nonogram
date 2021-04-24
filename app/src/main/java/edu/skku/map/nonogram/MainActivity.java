@@ -109,11 +109,8 @@ public class MainActivity extends AppCompatActivity {
                 changedImg.imgSlicing(1, size.x, whiteBoardImg);
                 //3. 20*20 개수의 이미지가 저장된 list를 흑백으로 변환
                 changedImg.imgListBlackWhiteScaling();
-
-
-
-                System.out.println("img size : " + changedImg.slicedImg.size());
-                System.out.println("backup img size : " + changedImg.slicedImg_Backup.size());
+//                System.out.println("img size : " + changedImg.slicedImg.size());
+//                System.out.println("backup img size : " + changedImg.slicedImg_Backup.size());
 
                 //custom adapter 설정해서 gridview생성해주기
                 gridAdapter = new GridAdapter(mainContext, changedImg.slicedImg_Backup, wantedSize);

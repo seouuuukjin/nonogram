@@ -55,8 +55,15 @@ public class ImageMaking extends AsyncTask<String, String, String> {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        gridAdapter = new GridAdapter(context, slicedImg, wantedSize);
+        //8. GridAdapter 설정하기
+        gridAdapter = new GridAdapter(context, slicedImg_Backup, wantedSize);
+        //9.전체 사진 리스트 돌면서 측면에 써놓을 정답 숫자들 구하기
+        fillListWithAnswerNumber(gridAdapter.answerNumberList);
+        //10. gridview의 column 갯수 알맞게 설정
+        MainActivity.gridView.setNumColumns(gridAdapter.answerNumberList.maxSizeY() + 20);
+        //11. 어댑터 붙이기
         MainActivity.gridView.setAdapter(gridAdapter);
+        
         MainActivity.gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -114,19 +121,13 @@ public class ImageMaking extends AsyncTask<String, String, String> {
             Bitmap whiteBoardImg = makingNewWhiteBoard(size, size);
             //5. 이미지 사이즈 정사각형으로 조정
             originImg = Bitmap.createScaledBitmap(naverResult.returnImg, size, size, true);
-            //7. 이미지 2개 각각 20x20으로 나누기 -> 나눈 결과는 slicedImg , slicedImg_Backup로 들어가게 된다.
+            //6. 이미지 2개 각각 20x20으로 나누기 -> 나눈 결과는 slicedImg , slicedImg_Backup로 들어가게 된다.
             imgSlicing(0, size, originImg); //원본사진
             imgSlicing(1, size, whiteBoardImg); //그냥 흰색 사진
-            //6. 이미지 흑백 변환
+            //7. 이미지 흑백 변환
             imgListBlackWhiteScaling();
-
-            System.out.println("sizeof Backup : " + slicedImg_Backup.size());
-            System.out.println("sizeof WhiteList : " + slicedImg.size());
-            //7-1. 이미지 나눠진것 보면서 이차원 배열에 각 숫자들 채워넣기
-            //NumberList answerNumberList = new NumberList();
-
             //8. GridView 세팅하기
-            // -> Main Thread 에서 해야하기 때문에, PostExcute에서 실행
+            // -> Main Thread 에서 해야하기 때문에, OnPostExecute 에서 실행
 
         } catch (IOException e) {
             e.printStackTrace();

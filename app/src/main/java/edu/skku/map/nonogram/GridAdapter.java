@@ -7,12 +7,15 @@ import android.graphics.Bitmap;
 import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.constraintlayout.solver.state.Dimension;
 
 import java.util.ArrayList;
 
@@ -72,7 +75,8 @@ public class GridAdapter extends BaseAdapter {
         int X,Y;
         ImageView image = new ImageView(c);
         TextView textView = new TextView(c);
-
+        textView.setTextSize(2, 7);
+        textView.setGravity(Gravity.CENTER_VERTICAL);
 
         X = position / (maxY + 20);
         Y = position % (maxY + 20);
@@ -84,7 +88,7 @@ public class GridAdapter extends BaseAdapter {
             return textView;
         }
         else if(X < maxX && Y >= maxY){
-            textView.setText("2");
+            textView.setText("1");
             return textView;
         }
         else if(X >= maxX && Y < maxY) {
