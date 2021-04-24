@@ -277,7 +277,7 @@ public class ImageMaking extends AsyncTask<String, String, String> {
                 data.add(num);
                 System.out.println(data.size());
             }
-            listInstance.y.add(data);
+            listInstance.x.add(data);
 //            System.out.println("------------\nInstance size-x : " + listInstance.x.size());
 //            System.out.println("Instance size-y : " + listInstance.y.size());
 //            System.out.println("tmp data list size : " + data.size());
@@ -305,7 +305,7 @@ public class ImageMaking extends AsyncTask<String, String, String> {
                 data.add(num);
                 System.out.println(data.size());
             }
-            listInstance.x.add(data);
+            listInstance.y.add(data);
 //            System.out.println("------------\nInstance size-x : " + listInstance.x.size());
 //            System.out.println("Instance size-y : " + listInstance.y.size());
 //            System.out.println("tmp data list size : " + data.size());

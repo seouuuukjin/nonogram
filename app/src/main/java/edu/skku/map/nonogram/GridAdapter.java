@@ -32,15 +32,15 @@ public class GridAdapter extends BaseAdapter {
     //임시 이미지 변수
     Bitmap deliveredImg;
 
-    public GridAdapter(Context c){
-        this.c = c;
-    }
-    public GridAdapter(Context c, Bitmap bm, int size){
-        this.c = c;
-        this.deliveredImg = bm;
-        this.size = size;
-
-    }
+//    public GridAdapter(Context c){
+//        this.c = c;
+//    }
+//    public GridAdapter(Context c, Bitmap bm, int size){
+//        this.c = c;
+//        this.deliveredImg = bm;
+//        this.size = size;
+//
+//    }
 
     public GridAdapter(Context c, ArrayList<Bitmap> slicedImg, int size){
         this.c = c;
@@ -78,7 +78,7 @@ public class GridAdapter extends BaseAdapter {
         ImageView image = new ImageView(c);
         TextView textView = new TextView(c);
         textView.setTextSize(2, 6);
-        textView.setGravity(Gravity.CENTER_VERTICAL);
+        textView.setGravity(Gravity.CENTER_HORIZONTAL);
 
         X = position / (maxY + 20);
         Y = position % (maxY + 20);
@@ -89,7 +89,7 @@ public class GridAdapter extends BaseAdapter {
             textView.setText(" ");
             return textView;
         }
-        else if(X < maxX  && Y >= maxY){
+        else if((X < maxX)  && (Y >= maxY)){
             //maxX보다 정답숫자배열의 길이가 짧아서 공백이 필요한 경우
             if(answerNumberList.zeroNumX[Y - maxY] > 0){
                 textView.setText(" ");
@@ -97,11 +97,11 @@ public class GridAdapter extends BaseAdapter {
             }
             //그렇지 않은 경우
             else{
-                textView.setText(Integer.toString(answerNumberList.y.get(Y-maxY).get(X-(answerNumberList.zeroNumX_Backup[Y-maxY])) ) );
+                textView.setText(Integer.toString(answerNumberList.x.get(Y-maxY).get(X-(answerNumberList.zeroNumX_Backup[Y-maxY])) ) );
             }
             return textView;
         }
-        else if(X >= maxX && Y < maxY) {
+        else if((X >= maxX) && (Y < maxY)) {
             //maxX보다 정답숫자배열의 길이가 짧아서 공백이 필요한 경우
             if(answerNumberList.zeroNumY[X - maxX] > 0){
                 textView.setText(" ");
@@ -109,7 +109,7 @@ public class GridAdapter extends BaseAdapter {
             }
             //그렇지 않은 경우
             else{
-                textView.setText(Integer.toString(answerNumberList.x.get(X-maxX).get(Y-answerNumberList.zeroNumY_Backup[X-maxX]) ) );
+                textView.setText(Integer.toString(answerNumberList.y.get(X-maxX).get(Y-(answerNumberList.zeroNumY_Backup[X-maxX])) ) );
             }
             return textView;
         }

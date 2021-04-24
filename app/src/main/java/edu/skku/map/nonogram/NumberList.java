@@ -33,10 +33,14 @@ public class NumberList {
         int maxX = maxSizeX();
         int maxY = maxSizeY();
         for(int i=0; i<20;i++){
-            zeroNumX[i] = maxY - y.get(i).size();
-            zeroNumY[i] = maxX - x.get(i).size();
-            zeroNumX_Backup[i] = maxY - y.get(i).size();
-            zeroNumY_Backup[i] = maxX - x.get(i).size();
+            zeroNumX[i] = maxX - x.get(i).size();
+            zeroNumY[i] = maxY - y.get(i).size();
+            zeroNumX_Backup[i] = maxX - x.get(i).size();
+            zeroNumY_Backup[i] = maxY - y.get(i).size();
+//            zeroNumX[i] = maxY - y.get(i).size();
+//            zeroNumY[i] = maxX - x.get(i).size();
+//            zeroNumX_Backup[i] = maxY - y.get(i).size();
+//            zeroNumY_Backup[i] = maxX - x.get(i).size();
         }
     }
 }

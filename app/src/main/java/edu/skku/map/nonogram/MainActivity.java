@@ -109,19 +109,17 @@ public class MainActivity extends AppCompatActivity {
                 changedImg.imgSlicing(1, size.x, whiteBoardImg);
                 //3. 20*20 개수의 이미지가 저장된 list를 흑백으로 변환
                 changedImg.imgListBlackWhiteScaling();
-//                System.out.println("img size : " + changedImg.slicedImg.size());
-//                System.out.println("backup img size : " + changedImg.slicedImg_Backup.size());
 
                 //custom adapter 설정해서 gridview생성해주기
                 gridAdapter = new GridAdapter(mainContext, changedImg.slicedImg_Backup, wantedSize);
 
-                //4. 나눠진 이미지 보면서 이차원 배열에 알맞은 숫자 채우기
-                //NumberList answerNumberList = new NumberList();
+                //4. 나눠진 이미지 보면서 이차원 배열에 알맞은 숫자 채우기 + + 공백 갯수도 구해놓기
                 changedImg.fillListWithAnswerNumber(gridAdapter.answerNumberList);
                 gridAdapter.answerNumberList.howmanyZero();
+
                 gridView.setNumColumns(gridAdapter.answerNumberList.maxSizeY() + 20);
-                //gridView.setNumColumns(20);
                 gridView.setAdapter(gridAdapter);
+
                 //gridview에서 해당 버튼 각각 이벤트 리스너 달아주기
                 gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
