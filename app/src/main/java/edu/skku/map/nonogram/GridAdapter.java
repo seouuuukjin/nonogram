@@ -37,6 +37,7 @@ public class GridAdapter extends BaseAdapter {
         this.size = size;
 
     }
+
     public GridAdapter(Context c, ArrayList<Bitmap> slicedImg, int size){
         this.c = c;
         this.slicedImg = (ArrayList<Bitmap>) slicedImg.clone();
@@ -47,8 +48,10 @@ public class GridAdapter extends BaseAdapter {
         maxX = answerNumberList.maxSizeX();
         maxY = answerNumberList.maxSizeY();
         System.out.println("max => " + maxX + " => " + maxY);
+        //System.out.println((20 + maxX) * (20 + maxY));
         return (20 + maxX) * (20 + maxY);
-        //return 1;
+
+        //return slicedImg.size();
     }
 
     @Override
@@ -67,38 +70,41 @@ public class GridAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         int X,Y;
+        ImageView image = new ImageView(c);
+        TextView textView = new TextView(c);
+
+
         X = position / (maxY + 20);
         Y = position % (maxY + 20);
 
-        System.out.println("(X, Y) = "+ X + ", " + Y);
-
+//        System.out.println("(X, Y) = "+ X + ", " + Y);
+//        System.out.println(position);
         if(X < maxX && Y < maxY){
-            TextView textView = new TextView(c);
+            textView.setText(" ");
             return textView;
         }
         else if(X < maxX && Y >= maxY){
-            TextView textView = new TextView(c);
+            textView.setText("2");
             return textView;
         }
-        else if(X >= maxX && Y < maxY){
-            TextView textView = new TextView(c);
+        else if(X >= maxX && Y < maxY) {
+            textView.setText("2");
             return textView;
         }
         else{
-            ImageView image;
-            if(convertView == null){
-                image = new ImageView(c);
-            }
-            else{
-                image = (ImageView) convertView;
-            }
             image.setLayoutParams(new ViewGroup.LayoutParams(size / 20, size / 20));
             image.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            image.setImageBitmap(slicedImg.get((X - maxX) * (Y - maxY)));
-
+            image.setImageBitmap(slicedImg.get((X-maxX) * 20 + Y - maxY));
             //image.setImageBitmap(deliveredImg);
             //System.out.println(slicedImg.get(position));
             return image;
         }
+//        image.setLayoutParams(new ViewGroup.LayoutParams(size / 20, size / 20));
+//        image.setScaleType(ImageView.ScaleType.FIT_CENTER);
+//        //image.setImageBitmap(deliveredImg);
+//        image.setImageBitmap(slicedImg.get(position));
+//        //System.out.println(slicedImg.get(position));
+//        return image;
+//        //imageView.setImageBitmap(deliveredImg);
     }
 }

@@ -102,33 +102,37 @@ public class MainActivity extends AppCompatActivity {
                 //2. 현재 이미지 크기를 resize
                 origin = Bitmap.createScaledBitmap(origin, wantedSize, wantedSize, true);
                 //2-1. 흰색 바탕 보드 사진 만들기
-                changedImg = new ImageMaking(wantedSize);
+                changedImg = new ImageMaking(wantedSize, origin);
                 Bitmap whiteBoardImg = changedImg.makingNewWhiteBoard(wantedSize, wantedSize);
-                //3. 현재 이미지를 흑백으로 변환
-                changedImg.BlackWhiteColoredImg = changedImg.imgBlackWhiteScaling(origin, wantedSize, wantedSize);
                 //3. 흑백으로 변환된 이미지 20x20 등분
-                changedImg.imgSlicing(0, size.x, changedImg.BlackWhiteColoredImg);
+                changedImg.imgSlicing(0, size.x, origin);
                 changedImg.imgSlicing(1, size.x, whiteBoardImg);
+                //3. 20*20 개수의 이미지가 저장된 list를 흑백으로 변환
+                changedImg.imgListBlackWhiteScaling();
+
 
 
                 System.out.println("img size : " + changedImg.slicedImg.size());
                 System.out.println("backup img size : " + changedImg.slicedImg_Backup.size());
 
                 //custom adapter 설정해서 gridview생성해주기
-                gridAdapter = new GridAdapter(mainContext, changedImg.slicedImg, wantedSize);
+                gridAdapter = new GridAdapter(mainContext, changedImg.slicedImg_Backup, wantedSize);
 
                 //4. 나눠진 이미지 보면서 이차원 배열에 알맞은 숫자 채우기
                 //NumberList answerNumberList = new NumberList();
                 changedImg.fillListWithAnswerNumber(gridAdapter.answerNumberList);
-
+                gridView.setNumColumns(gridAdapter.answerNumberList.maxSizeY() + 20);
+                //gridView.setNumColumns(20);
                 gridView.setAdapter(gridAdapter);
                 //gridview에서 해당 버튼 각각 이벤트 리스너 달아주기
                 gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         System.out.println(changedImg.blackImg);
+                        int X = position / (gridAdapter.maxY + 20);
+                        int Y = position % (gridAdapter.maxY + 20);
                             //원래 검정색 타일인 이미지를 눌렀을 때 -> 해당 타일 검정색으로 변환 및 정답과 같은지 체크
-                            if(changedImg.slicedImg_Backup.get(position).sameAs(changedImg.blackImg)){
+                            if(changedImg.slicedImg_Backup.get((X-gridAdapter.maxX) * 20 + Y - gridAdapter.maxY).sameAs(changedImg.blackImg)){
                                 //해당 타일 검정색으로 칠하기 - 팍셀 하나하나 칠함
                                 changedImg.convertToBlack(changedImg.slicedImg.get(position).getWidth(), changedImg.slicedImg.get(position).getHeight(), changedImg.slicedImg.get(position));
                                 gridView.setAdapter(gridAdapter);
