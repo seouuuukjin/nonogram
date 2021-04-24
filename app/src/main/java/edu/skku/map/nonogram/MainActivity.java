@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
                 //4. 나눠진 이미지 보면서 이차원 배열에 알맞은 숫자 채우기
                 //NumberList answerNumberList = new NumberList();
                 changedImg.fillListWithAnswerNumber(gridAdapter.answerNumberList);
+                gridAdapter.answerNumberList.howmanyZero();
                 gridView.setNumColumns(gridAdapter.answerNumberList.maxSizeY() + 20);
                 //gridView.setNumColumns(20);
                 gridView.setAdapter(gridAdapter);

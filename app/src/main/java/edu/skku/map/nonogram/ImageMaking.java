@@ -57,13 +57,14 @@ public class ImageMaking extends AsyncTask<String, String, String> {
         super.onPostExecute(s);
         //8. GridAdapter 설정하기
         gridAdapter = new GridAdapter(context, slicedImg_Backup, wantedSize);
-        //9.전체 사진 리스트 돌면서 측면에 써놓을 정답 숫자들 구하기
+        //9.전체 사진 리스트 돌면서 측면에 써놓을 정답 숫자들 구하기 + 공백 갯수도 구해놓기
         fillListWithAnswerNumber(gridAdapter.answerNumberList);
+        gridAdapter.answerNumberList.howmanyZero();
         //10. gridview의 column 갯수 알맞게 설정
         MainActivity.gridView.setNumColumns(gridAdapter.answerNumberList.maxSizeY() + 20);
         //11. 어댑터 붙이기
         MainActivity.gridView.setAdapter(gridAdapter);
-        
+
         MainActivity.gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -272,7 +273,7 @@ public class ImageMaking extends AsyncTask<String, String, String> {
                 }
             }
             if(num != 0){
-                System.out.println("(y, x) = " + y + ", 20");
+                System.out.println("filling(y, x) = " + y + ", 20");
                 data.add(num);
                 System.out.println(data.size());
             }

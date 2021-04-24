@@ -24,7 +24,8 @@ public class GridAdapter extends BaseAdapter {
     private String imgString;
     public ArrayList<Bitmap> slicedImg;
     int size;
-    public NumberList answerNumberList = new NumberList();
+    public NumberList answerNumberList;
+
     int maxX;
     int maxY;
 
@@ -45,6 +46,7 @@ public class GridAdapter extends BaseAdapter {
         this.c = c;
         this.slicedImg = (ArrayList<Bitmap>) slicedImg.clone();
         this.size = size;
+        answerNumberList = new NumberList();
     }
     @Override
     public int getCount() {
@@ -68,31 +70,47 @@ public class GridAdapter extends BaseAdapter {
         return position;
     }
 
-    @SuppressLint("StaticFieldLeak")
+    @SuppressLint({"StaticFieldLeak", "SetTextI18n"})
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
         int X,Y;
         ImageView image = new ImageView(c);
         TextView textView = new TextView(c);
-        textView.setTextSize(2, 7);
+        textView.setTextSize(2, 6);
         textView.setGravity(Gravity.CENTER_VERTICAL);
 
         X = position / (maxY + 20);
         Y = position % (maxY + 20);
 
-//        System.out.println("(X, Y) = "+ X + ", " + Y);
+        System.out.println("(X, Y) = "+ X + ", " + Y);
 //        System.out.println(position);
         if(X < maxX && Y < maxY){
             textView.setText(" ");
             return textView;
         }
-        else if(X < maxX && Y >= maxY){
-            textView.setText("1");
+        else if(X < maxX  && Y >= maxY){
+            //maxX보다 정답숫자배열의 길이가 짧아서 공백이 필요한 경우
+            if(answerNumberList.zeroNumX[Y - maxY] > 0){
+                textView.setText(" ");
+                answerNumberList.zeroNumX[Y - maxY]--;
+            }
+            //그렇지 않은 경우
+            else{
+                textView.setText(Integer.toString(answerNumberList.y.get(Y-maxY).get(X-(answerNumberList.zeroNumX_Backup[Y-maxY])) ) );
+            }
             return textView;
         }
         else if(X >= maxX && Y < maxY) {
-            textView.setText("2");
+            //maxX보다 정답숫자배열의 길이가 짧아서 공백이 필요한 경우
+            if(answerNumberList.zeroNumY[X - maxX] > 0){
+                textView.setText(" ");
+                answerNumberList.zeroNumY[X - maxX]--;
+            }
+            //그렇지 않은 경우
+            else{
+                textView.setText(Integer.toString(answerNumberList.x.get(X-maxX).get(Y-answerNumberList.zeroNumY_Backup[X-maxX]) ) );
+            }
             return textView;
         }
         else{
