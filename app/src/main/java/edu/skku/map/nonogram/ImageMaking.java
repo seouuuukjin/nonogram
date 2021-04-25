@@ -22,12 +22,9 @@ import static edu.skku.map.nonogram.MainActivity.wantedSize;
 public class ImageMaking extends AsyncTask<String, String, String> {
     public ArrayList<Bitmap> slicedImg = new ArrayList<Bitmap>(400);
     public ArrayList<Bitmap> slicedImg_Backup = new ArrayList<Bitmap>(400);
-    //public ArrayList<Bitmap> slicedImg_White = new ArrayList<Bitmap>(400);
-    public ArrayList<Bitmap> blackWhiteColoredImgList = new ArrayList<Bitmap>(400);
+    public int[][] answerSheet = new int[20][20];
 
-    //public Bitmap BlackWhiteColoredImg;
     public Bitmap originImg;
-    //public Bitmap whiteImg;
     public Bitmap blackImg;
 
     public int size;
@@ -38,14 +35,10 @@ public class ImageMaking extends AsyncTask<String, String, String> {
         this.context = context;
         this.size = size;
         blackImg = makingBlackImg(size / 20, size / 20);
-//        whiteImg = makingNewWhiteBoard(size, size);
-//        imgSlicing(2, size, whiteImg);
     }
     public ImageMaking(int size, Bitmap originImg){
         blackImg = makingBlackImg(size / 20, size / 20);
         this.originImg = originImg;
-//        whiteImg = makingNewWhiteBoard(size, size);
-//        imgSlicing(2, size, whiteImg);
     }
     @Override
     protected void onPreExecute() {
@@ -56,7 +49,7 @@ public class ImageMaking extends AsyncTask<String, String, String> {
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
         //8. GridAdapter 설정하기
-        gridAdapter = new GridAdapter(context, slicedImg_Backup, wantedSize);
+        gridAdapter = new GridAdapter(context, slicedImg, wantedSize);
         //9.전체 사진 리스트 돌면서 측면에 써놓을 정답 숫자들 구하기 + 공백 갯수도 구해놓기
         fillListWithAnswerNumber(gridAdapter.answerNumberList);
         gridAdapter.answerNumberList.howmanyZero();
@@ -64,39 +57,73 @@ public class ImageMaking extends AsyncTask<String, String, String> {
         MainActivity.gridView.setNumColumns(gridAdapter.answerNumberList.maxSizeY() + 20);
         //11. 어댑터 붙이기
         MainActivity.gridView.setAdapter(gridAdapter);
-
         MainActivity.gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 System.out.println("$$$$$$$$$$$$$");
-                if(slicedImg_Backup.get(position).sameAs(blackImg)){
-                    //해당 타일 검정색으로 칠하기 - 팍셀 하나하나 칠함
-                    convertToBlack(slicedImg.get(position).getWidth(), slicedImg.get(position).getHeight(), slicedImg.get(position));
-                    MainActivity.gridView.setAdapter(gridAdapter);
-                    //전체 타일 돌면서 백언해놓은 원본 흑백 이미지와 같은지 비교
-                    int correct = 1;
-                    for(int i=0; i<400; i++){
-                        if( !(slicedImg.get(i).sameAs(slicedImg_Backup.get(i))) )
-                            correct = 0;
+                int X = position / (gridAdapter.maxY + 20);
+                int Y = position % (gridAdapter.maxY + 20);
+                if((X >= gridAdapter.maxX) && (Y >= gridAdapter.maxY)){
+                    int targetPosition = (X-gridAdapter.maxX) * 20 + Y - gridAdapter.maxY;
+                    int targetCheckPosition;
+                    //원래 검정색 타일인 이미지를 눌렀을 때 -> 해당 타일 검정색으로 변환 및 정답과 같은지 체크
+                    if(answerSheet[X - gridAdapter.maxX][Y - gridAdapter.maxY] == 1) {
+                        //해당 타일 검정색으로 칠하기 - 팍셀 하나하나 칠함
+                        convertToBlack(slicedImg.get(targetPosition).getWidth(), slicedImg.get(targetPosition).getHeight(), slicedImg.get(targetPosition));
+                        MainActivity.gridView.setAdapter(gridAdapter);
+                        //전체 타일 돌면서 백언해놓은 원본 흑백 이미지와 같은지 비교
+                        int correct = 1;
+                        for (int i = 0; i < 400; i++) {
+                            //targetCheckPosition = (20 + gridAdapter.maxY) * (gridAdapter.maxX + i / 20) + gridAdapter.maxY + i % 20;
+                            if (!(slicedImg.get(i).sameAs(slicedImg_Backup.get(i))))
+                                correct = 0;
+                        }
+                        //만약 같다면, 토스트 메시지 출력
+                        if (correct == 1) {
+                            Toast myToast = Toast.makeText(context, "FINISH!", Toast.LENGTH_LONG);
+                            myToast.show();
+                        }
                     }
-                    //만약 같다면, 토스트 메시지 출력
-                    if(correct == 1){
-                        Toast myToast = Toast.makeText(context,"FINISH!", Toast.LENGTH_LONG);
+                    else{
+                        //오답 안내 메시지 출력
+                        Toast myToast = Toast.makeText(context,"Wrong Tile Clicked", Toast.LENGTH_SHORT);
                         myToast.show();
+                        //전체 보드 하얀색으로 다시 초기화
+                        for(int i=0; i<400; i++){
+                            if(slicedImg.get(i).sameAs(blackImg))
+                                convertToWhite(slicedImg.get(i).getWidth(), slicedImg.get(i).getHeight(), slicedImg.get(i));
+                        }
+                        MainActivity.gridView.setAdapter(gridAdapter);
                     }
                 }
-                //검정색이 아닌 타일을 눌렀을 때 -> 초기화
-                else{
-                    //오답 안내 메시지 출력
-                    Toast myToast = Toast.makeText(context,"Wrong Tile Clicked", Toast.LENGTH_SHORT);
-                    myToast.show();
-                    //전체 보드 하얀색으로 다시 초기화
-                    for(int i=0; i<400; i++){
-                        if(slicedImg.get(i).sameAs(blackImg))
-                            convertToWhite(slicedImg.get(i).getWidth(), slicedImg.get(i).getHeight(), slicedImg.get(i));
-                    }
-                    MainActivity.gridView.setAdapter(gridAdapter);
-                }
+//                if(slicedImg_Backup.get(position).sameAs(blackImg)){
+//                    //해당 타일 검정색으로 칠하기 - 팍셀 하나하나 칠함
+//                    convertToBlack(slicedImg.get(position).getWidth(), slicedImg.get(position).getHeight(), slicedImg.get(position));
+//                    MainActivity.gridView.setAdapter(gridAdapter);
+//                    //전체 타일 돌면서 백언해놓은 원본 흑백 이미지와 같은지 비교
+//                    int correct = 1;
+//                    for(int i=0; i<400; i++){
+//                        if( !(slicedImg.get(i).sameAs(slicedImg_Backup.get(i))) )
+//                            correct = 0;
+//                    }
+//                    //만약 같다면, 토스트 메시지 출력
+//                    if(correct == 1){
+//                        Toast myToast = Toast.makeText(context,"FINISH!", Toast.LENGTH_LONG);
+//                        myToast.show();
+//                    }
+//                }
+//                //검정색이 아닌 타일을 눌렀을 때 -> 초기화
+//                else{
+//                    //오답 안내 메시지 출력
+//                    Toast myToast = Toast.makeText(context,"Wrong Tile Clicked", Toast.LENGTH_SHORT);
+//                    myToast.show();
+//                    //전체 보드 하얀색으로 다시 초기화
+//                    for(int i=0; i<400; i++){
+//                        if(slicedImg.get(i).sameAs(blackImg))
+//                            convertToWhite(slicedImg.get(i).getWidth(), slicedImg.get(i).getHeight(), slicedImg.get(i));
+//                    }
+//                    MainActivity.gridView.setAdapter(gridAdapter);
+//                }
             }
         });
     }
@@ -154,13 +181,6 @@ public class ImageMaking extends AsyncTask<String, String, String> {
 
             }
         }
-//        else if(mode == 2){
-//            for(int i=0; i<20; i++){
-//                for(int j=0; j<20; j++){
-//                    slicedImg_White.add(Bitmap.createBitmap(targetImg, j * standardWidth, i* standardWidth, standardWidth, standardHeight));
-//                }
-//            }
-//        }
     }
     public void imgListBlackWhiteScaling(/*int originWidth, int originHeight*/){
 
@@ -186,30 +206,13 @@ public class ImageMaking extends AsyncTask<String, String, String> {
             }
             if(blackPxnum >= whitePxnum){
                 convertToBlack(slicedImg_Backup.get(i).getWidth(), slicedImg_Backup.get(i).getHeight(), slicedImg_Backup.get(i));
+                answerSheet[i/20][i%20] = 1;
             }
             else{
                 convertToWhite(slicedImg_Backup.get(i).getWidth(), slicedImg_Backup.get(i).getHeight(), slicedImg_Backup.get(i));
+                answerSheet[i/20][i%20] = 0;
             }
         }
-//        Bitmap workingImg = Bitmap.createBitmap(originWidth, originHeight, Bitmap.Config.ARGB_4444);
-//        int R, G, B, A, px;
-//        for(int i=0; i<originWidth; i++){
-//            for(int j=0; j<originHeight; j++){
-//                px = targetImg.getPixel(i,j);
-//                A = Color.alpha(px);
-//                R = Color.red(px);
-//                G = Color.green(px);
-//                B = Color.blue(px);
-//                int grayValue = (int)(0.2989 * R + 0.5870 * G + 0.1140 * B);
-//
-//                if(grayValue > 128)
-//                    grayValue = 255;
-//                else
-//                    grayValue = 0;
-//                workingImg.setPixel(i, j, Color.argb(A, grayValue, grayValue, grayValue));
-//            }
-//        }
-//        return workingImg;
     }
     public Bitmap makingNewWhiteBoard(int originWidth, int originHeight){
         Bitmap workingImg = Bitmap.createBitmap(originWidth, originHeight, Bitmap.Config.ARGB_4444);
@@ -259,7 +262,6 @@ public class ImageMaking extends AsyncTask<String, String, String> {
             int num = 0;
             ArrayList<Integer> data = new ArrayList<Integer>();
             for(int x=0; x<20; x++){
-                //if(slicedImg_Backup.get(20 * x + y).sameAs(blackImg)){
                 if(blackCheck(slicedImg_Backup.get(20 * x + y))){
                     System.out.println("(y, x) = " + y + ", " + x);
                     num++;
@@ -278,16 +280,12 @@ public class ImageMaking extends AsyncTask<String, String, String> {
                 System.out.println(data.size());
             }
             listInstance.x.add(data);
-//            System.out.println("------------\nInstance size-x : " + listInstance.x.size());
-//            System.out.println("Instance size-y : " + listInstance.y.size());
-//            System.out.println("tmp data list size : " + data.size());
         }
         //세로 부분 시작
         for(int x =0; x<20; x++){
             int num = 0;
             ArrayList<Integer> data = new ArrayList<Integer>();
             for(int y=0; y<20; y++){
-                //if(slicedImg_Backup.get(20 * x + y).sameAs(blackImg)){
                 if(blackCheck(slicedImg_Backup.get(20 * x + y))){
                     num++;
                 }
@@ -306,9 +304,6 @@ public class ImageMaking extends AsyncTask<String, String, String> {
                 System.out.println(data.size());
             }
             listInstance.y.add(data);
-//            System.out.println("------------\nInstance size-x : " + listInstance.x.size());
-//            System.out.println("Instance size-y : " + listInstance.y.size());
-//            System.out.println("tmp data list size : " + data.size());
         }
     }
 }

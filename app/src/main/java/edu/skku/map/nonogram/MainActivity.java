@@ -40,9 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button toSearch, toGallery;
     EditText searchKeyword;
-    ImageView imageView;
     Context mainContext = this;
-    //ArrayList<Bitmap> slicedImg;
     Bitmap origin;
     Display display;
     ImageMaking changedImg;
@@ -55,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
         toGallery = findViewById(R.id.toGallery);
         toSearch = findViewById(R.id.toSearch);
         searchKeyword = findViewById(R.id.searchKeyword);
-        //imageView = findViewById(R.id.imageView);
         toSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                 changedImg.imgListBlackWhiteScaling();
 
                 //custom adapter 설정해서 gridview생성해주기
-                gridAdapter = new GridAdapter(mainContext, changedImg.slicedImg_Backup, wantedSize);
+                gridAdapter = new GridAdapter(mainContext, changedImg.slicedImg, wantedSize);
 
                 //4. 나눠진 이미지 보면서 이차원 배열에 알맞은 숫자 채우기 + + 공백 갯수도 구해놓기
                 changedImg.fillListWithAnswerNumber(gridAdapter.answerNumberList);
@@ -119,18 +116,20 @@ public class MainActivity extends AppCompatActivity {
 
                 gridView.setNumColumns(gridAdapter.answerNumberList.maxSizeY() + 20);
                 gridView.setAdapter(gridAdapter);
-
+                //TODO
                 //gridview에서 해당 버튼 각각 이벤트 리스너 달아주기
                 gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        System.out.println(changedImg.blackImg);
                         int X = position / (gridAdapter.maxY + 20);
                         int Y = position % (gridAdapter.maxY + 20);
+                        if((X >= gridAdapter.maxX) && (Y >= gridAdapter.maxY)){
+                            int targetPosition = (X-gridAdapter.maxX) * 20 + Y - gridAdapter.maxY;
+                            System.out.println("ITEM CLICKED!!!!!!!");
                             //원래 검정색 타일인 이미지를 눌렀을 때 -> 해당 타일 검정색으로 변환 및 정답과 같은지 체크
-                            if(changedImg.slicedImg_Backup.get((X-gridAdapter.maxX) * 20 + Y - gridAdapter.maxY).sameAs(changedImg.blackImg)){
+                            if(changedImg.answerSheet[X - gridAdapter.maxX][Y - gridAdapter.maxY] == 1){
                                 //해당 타일 검정색으로 칠하기 - 팍셀 하나하나 칠함
-                                changedImg.convertToBlack(changedImg.slicedImg.get(position).getWidth(), changedImg.slicedImg.get(position).getHeight(), changedImg.slicedImg.get(position));
+                                changedImg.convertToBlack(changedImg.slicedImg.get(targetPosition).getWidth(), changedImg.slicedImg.get(targetPosition).getHeight(), changedImg.slicedImg.get(targetPosition));
                                 gridView.setAdapter(gridAdapter);
                                 //전체 타일 돌면서 백언해놓은 원본 흑백 이미지와 같은지 비교
                                 int correct = 1;
@@ -156,6 +155,9 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 gridView.setAdapter(gridAdapter);
                             }
+                        }
+
+
 
                     }
                 });
